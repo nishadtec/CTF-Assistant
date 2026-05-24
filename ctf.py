@@ -1,5 +1,3 @@
-
-
 import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox, font
 import base64
@@ -13,9 +11,6 @@ from collections import Counter
 from datetime import datetime
 import threading
 
-# ============================================================
-# CORE FUNCTIONS
-# ============================================================
 
 def b64_decode(data):
     try:
@@ -251,10 +246,6 @@ def generate_hash(text, algo):
         return hashlib.sha512(text_bytes).hexdigest()
     return None
 
-# ============================================================
-# GUI APPLICATION
-# ============================================================
-
 class AutoCTFApp:
     def __init__(self, root):
         self.root = root
@@ -262,22 +253,17 @@ class AutoCTFApp:
         self.root.geometry("1400x900")
         self.root.configure(bg='#0a0e1a')
         
-        # Define fonts first
         self.title_font = font.Font(family='Courier', size=12, weight='bold')
         self.mono_font = font.Font(family='Courier', size=10)
         
-        # Current data
         self.current_data = ""
         self.flag_format = "CTF{"
         self.history = []
         
-        # Load library
         self.library = self.load_library()
         
-        # Setup UI
         self.setup_ui()
         
-        # Apply styling
         self.apply_styling()
     
     def load_library(self):
@@ -314,11 +300,9 @@ class AutoCTFApp:
         style.map('TButton', background=[('active', bg_light)], foreground=[('active', fg_green)])
     
     def setup_ui(self):
-        # Main container
         main_frame = ttk.Frame(self.root, padding="10")
         main_frame.pack(fill=tk.BOTH, expand=True)
         
-        # Header
         header_frame = ttk.Frame(main_frame)
         header_frame.pack(fill=tk.X, pady=(0, 10))
         
@@ -326,11 +310,9 @@ class AutoCTFApp:
                                 font=self.title_font, foreground='#00ff88')
         title_label.pack(side=tk.LEFT)
         
-        # Notebook for tabs
         self.notebook = ttk.Notebook(main_frame)
         self.notebook.pack(fill=tk.BOTH, expand=True)
         
-        # Create tabs
         self.create_solver_tab()
         self.create_tools_tab()
         self.create_twotime_tab()
@@ -343,7 +325,6 @@ class AutoCTFApp:
         tab = ttk.Frame(self.notebook)
         self.notebook.add(tab, text="🔍 Solver")
         
-        # Left panel - Input
         left_frame = ttk.Frame(tab)
         left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 5))
         
@@ -356,7 +337,6 @@ class AutoCTFApp:
                                                      highlightcolor='#00ff88', highlightbackground='#2a2e3f')
         self.input_text.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
         
-        # Flag format
         format_frame = ttk.Frame(left_frame)
         format_frame.pack(fill=tk.X, pady=(0, 10))
         ttk.Label(format_frame, text="Flag Format:").pack(side=tk.LEFT)
@@ -365,7 +345,6 @@ class AutoCTFApp:
         self.flag_format_entry.pack(side=tk.LEFT, padx=(10, 0))
         ttk.Button(format_frame, text="Set", command=self.update_flag_format).pack(side=tk.LEFT, padx=(5, 0))
         
-        # Action buttons
         btn_frame = ttk.Frame(left_frame)
         btn_frame.pack(fill=tk.X)
         
@@ -374,7 +353,6 @@ class AutoCTFApp:
         ttk.Button(btn_frame, text="🗑 CLEAR", command=self.clear_all).pack(side=tk.LEFT, padx=5)
         ttk.Button(btn_frame, text="📋 COPY", command=self.copy_output).pack(side=tk.LEFT, padx=5)
         
-        # Right panel - Output
         right_frame = ttk.Frame(tab)
         right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=(5, 0))
         
@@ -387,7 +365,6 @@ class AutoCTFApp:
                                                       highlightcolor='#00ff88', highlightbackground='#2a2e3f')
         self.output_text.pack(fill=tk.BOTH, expand=True)
         
-        # Progress bar
         self.progress = ttk.Progressbar(right_frame, mode='indeterminate')
         self.progress.pack(fill=tk.X, pady=(5, 0))
     
@@ -395,13 +372,11 @@ class AutoCTFApp:
         tab = ttk.Frame(self.notebook)
         self.notebook.add(tab, text="🛠 Tools")
         
-        # Input area
         ttk.Label(tab, text="Input Data:", font=self.title_font).pack(anchor=tk.W, pady=(0, 5))
         self.tool_input = scrolledtext.ScrolledText(tab, height=6, font=self.mono_font,
                                                      bg='#111520', fg='#e0e0e0')
         self.tool_input.pack(fill=tk.X, pady=(0, 10))
         
-        # Tool buttons grid
         tools_frame = ttk.Frame(tab)
         tools_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
         
@@ -429,7 +404,6 @@ class AutoCTFApp:
                 col = 0
                 row += 1
         
-        # Vigenere with key
         vigenere_frame = ttk.Frame(tab)
         vigenere_frame.pack(fill=tk.X, pady=(10, 0))
         ttk.Label(vigenere_frame, text="Vigenere Key:").pack(side=tk.LEFT)
@@ -438,7 +412,6 @@ class AutoCTFApp:
         ttk.Button(vigenere_frame, text="Vigenere Decode", 
                    command=lambda: self.run_tool('vigenere')).pack(side=tk.LEFT)
         
-        # XOR with key
         xor_frame = ttk.Frame(tab)
         xor_frame.pack(fill=tk.X, pady=(5, 0))
         ttk.Label(xor_frame, text="XOR Key (0-255):").pack(side=tk.LEFT)
@@ -447,7 +420,6 @@ class AutoCTFApp:
         ttk.Button(xor_frame, text="XOR Decode", 
                    command=lambda: self.run_tool('xor_key')).pack(side=tk.LEFT)
         
-        # Output area
         ttk.Label(tab, text="Tool Output:", font=self.title_font).pack(anchor=tk.W, pady=(10, 5))
         self.tool_output = scrolledtext.ScrolledText(tab, height=8, font=self.mono_font,
                                                       bg='#0a0e1a', fg='#00ff88')
@@ -458,28 +430,24 @@ class AutoCTFApp:
         tab = ttk.Frame(self.notebook)
         self.notebook.add(tab, text="🔐 Two-Time Pad Attack")
         
-        # Instruction label
         info_frame = ttk.Frame(tab)
         info_frame.pack(fill=tk.X, pady=(0, 10))
         info_text = """Two-Time Pad Attack - When same key is reused for two messages:
         C1 = P1 ⊕ Key, C2 = P2 ⊕ Key → C1 ⊕ C2 = P1 ⊕ P2"""
         ttk.Label(info_frame, text=info_text, font=self.mono_font, foreground='#00d4ff').pack()
         
-        # Ciphertext 1
         c1_frame = ttk.LabelFrame(tab, text="Ciphertext 1 (Hex)", padding="10")
         c1_frame.pack(fill=tk.X, pady=(0, 10))
         self.c1_input = scrolledtext.ScrolledText(c1_frame, height=3, font=self.mono_font,
                                                    bg='#111520', fg='#e0e0e0')
         self.c1_input.pack(fill=tk.X)
         
-        # Ciphertext 2
         c2_frame = ttk.LabelFrame(tab, text="Ciphertext 2 (Hex)", padding="10")
         c2_frame.pack(fill=tk.X, pady=(0, 10))
         self.c2_input = scrolledtext.ScrolledText(c2_frame, height=3, font=self.mono_font,
                                                    bg='#111520', fg='#e0e0e0')
         self.c2_input.pack(fill=tk.X)
         
-        # Options frame
         options_frame = ttk.Frame(tab)
         options_frame.pack(fill=tk.X, pady=(0, 10))
         
@@ -488,10 +456,8 @@ class AutoCTFApp:
         self.common_words_entry.insert(0, "CTF{,flag,the ,and ,this ,is ,secret,message")
         self.common_words_entry.pack(side=tk.LEFT, padx=(5, 10))
         
-        # Attack button
         ttk.Button(tab, text="🚀 START ATTACK", command=self.twotime_attack).pack(pady=(0, 10))
         
-        # Results area
         results_frame = ttk.LabelFrame(tab, text="Attack Results", padding="10")
         results_frame.pack(fill=tk.BOTH, expand=True)
         
@@ -499,7 +465,6 @@ class AutoCTFApp:
                                                          bg='#0a0e1a', fg='#00ff88')
         self.twotime_output.pack(fill=tk.BOTH, expand=True)
         
-        # Progress bar
         self.twotime_progress = ttk.Progressbar(tab, mode='indeterminate')
         self.twotime_progress.pack(fill=tk.X, pady=(5, 0))
     
@@ -507,7 +472,6 @@ class AutoCTFApp:
         tab = ttk.Frame(self.notebook)
         self.notebook.add(tab, text="🔑 Hash Tools")
         
-        # Hash Identifier
         id_frame = ttk.LabelFrame(tab, text="Hash Identifier", padding="10")
         id_frame.pack(fill=tk.X, pady=(0, 10))
         
@@ -519,7 +483,6 @@ class AutoCTFApp:
         self.hash_result = tk.Text(id_frame, height=4, bg='#111520', fg='#00ff88', font=self.mono_font)
         self.hash_result.pack(fill=tk.X, pady=(5, 0))
         
-        # Hash Generator
         gen_frame = ttk.LabelFrame(tab, text="Hash Generator", padding="10")
         gen_frame.pack(fill=tk.X, pady=(0, 10))
         
@@ -542,12 +505,10 @@ class AutoCTFApp:
         tab = ttk.Frame(self.notebook)
         self.notebook.add(tab, text="💥 Bruteforce")
         
-        # Input
         ttk.Label(tab, text="Target Text:", font=self.title_font).pack(anchor=tk.W, pady=(0, 5))
         self.bf_input = scrolledtext.ScrolledText(tab, height=8, font=self.mono_font, bg='#111520', fg='#e0e0e0')
         self.bf_input.pack(fill=tk.X, pady=(0, 10))
         
-        # Options
         options_frame = ttk.Frame(tab)
         options_frame.pack(fill=tk.X, pady=(0, 10))
         
@@ -559,7 +520,6 @@ class AutoCTFApp:
         
         ttk.Button(tab, text="🚀 START BRUTEFORCE", command=self.bruteforce).pack(pady=(0, 10))
         
-        # Output
         ttk.Label(tab, text="Results:", font=self.title_font).pack(anchor=tk.W)
         self.bf_output = scrolledtext.ScrolledText(tab, height=12, font=self.mono_font, bg='#0a0e1a', fg='#00ff88')
         self.bf_output.pack(fill=tk.BOTH, expand=True)
@@ -568,18 +528,15 @@ class AutoCTFApp:
         tab = ttk.Frame(self.notebook)
         self.notebook.add(tab, text="📚 Library")
         
-        # Buttons
         btn_frame = ttk.Frame(tab)
         btn_frame.pack(fill=tk.X, pady=(0, 10))
         ttk.Button(btn_frame, text="Refresh", command=self.refresh_library).pack(side=tk.LEFT, padx=2)
         ttk.Button(btn_frame, text="Clear Library", command=self.clear_library).pack(side=tk.LEFT, padx=2)
         
-        # Listbox
         self.lib_listbox = tk.Listbox(tab, bg='#111520', fg='#e0e0e0', font=self.mono_font, height=15)
         self.lib_listbox.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
         self.lib_listbox.bind('<<ListboxSelect>>', self.show_library_item)
         
-        # Detail view
         ttk.Label(tab, text="Details:", font=self.title_font).pack(anchor=tk.W)
         self.lib_detail = scrolledtext.ScrolledText(tab, height=8, font=self.mono_font, bg='#0a0e1a', fg='#00d4ff')
         self.lib_detail.pack(fill=tk.BOTH, expand=True)
@@ -616,10 +573,6 @@ class AutoCTFApp:
         
         about_label = ttk.Label(tab, text=about_text, font=self.mono_font, justify=tk.LEFT)
         about_label.pack(padx=20, pady=20)
-    
-    # ============================================================
-    # FUNCTIONALITY
-    # ============================================================
     
     def update_flag_format(self):
         self.flag_format = self.flag_format_entry.get()
@@ -813,21 +766,17 @@ class AutoCTFApp:
                 self.twotime_output.insert(tk.END, "[-] Please enter both ciphertexts!\n")
                 return
             
-            # Clear output and show starting message
             self.twotime_output.delete(1.0, tk.END)
             self.twotime_output.insert(tk.END, "="*70 + "\n")
             self.twotime_output.insert(tk.END, "🔐 TWO-TIME PAD ATTACK IN PROGRESS...\n")
             self.twotime_output.insert(tk.END, "="*70 + "\n\n")
             self.twotime_output.update()
             
-            # Start progress bar
             self.twotime_progress.start()
             
-            # Get common words
             common_words_str = self.common_words_entry.get().strip()
             common_words = [w.encode() for w in common_words_str.split(',') if w.strip()]
             
-            # Convert hex to bytes
             def hex_to_bytes(hex_str):
                 try:
                     hex_str = re.sub(r'\s|0x|,', '', hex_str)
@@ -843,18 +792,15 @@ class AutoCTFApp:
                 self.twotime_progress.stop()
                 return
             
-            # XOR
             min_len = min(len(c1_bytes), len(c2_bytes))
             xor_result = bytes([c1_bytes[i] ^ c2_bytes[i] for i in range(min_len)])
             
-            # Display XOR result
             self.twotime_output.insert(tk.END, "📊 STEP 1: XOR OF CIPHERTEXTS (P1 ⊕ P2)\n")
             self.twotime_output.insert(tk.END, "-"*70 + "\n")
             self.twotime_output.insert(tk.END, f"Hex: {xor_result.hex()}\n")
             self.twotime_output.insert(tk.END, f"Length: {len(xor_result)} bytes\n\n")
             self.twotime_output.update()
             
-            # Try flag pattern
             self.twotime_output.insert(tk.END, "🏁 STEP 2: LOOKING FOR CTF{ PATTERN\n")
             self.twotime_output.insert(tk.END, "-"*70 + "\n")
             
@@ -872,7 +818,6 @@ class AutoCTFApp:
             if not found_any:
                 self.twotime_output.insert(tk.END, "  No CTF{ pattern found.\n")
             
-            # Try common words
             self.twotime_output.insert(tk.END, "\n🔍 STEP 3: TRYING COMMON WORDS\n")
             self.twotime_output.insert(tk.END, "-"*70 + "\n")
             
@@ -887,7 +832,6 @@ class AutoCTFApp:
                         found_word = True
                         self.twotime_output.update()
                     
-                    # Guess in P2
                     p1_candidate = bytes([xor_result[pos + i] ^ word[i] for i in range(len(word))])
                     if all(32 <= b <= 126 for b in p1_candidate):
                         self.twotime_output.insert(tk.END,
@@ -898,7 +842,6 @@ class AutoCTFApp:
             if not found_word:
                 self.twotime_output.insert(tk.END, "  No readable words found.\n")
             
-            # Show full XOR result as characters
             self.twotime_output.insert(tk.END, "\n📝 STEP 4: XOR RESULT AS CHARACTERS\n")
             self.twotime_output.insert(tk.END, "-"*70 + "\n")
             
